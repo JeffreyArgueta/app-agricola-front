@@ -17,7 +17,13 @@ function getFocusableElements(container) {
 export function Modal({ open, onClose, title, description, className, children }) {
   const panelRef = useRef(null);
 
-  // Foco inicial + trampa de Tab + Escape + bloqueo de scroll.
+  // Referencia viva al cierre para no re-suscribir efectos si su identidad cambia.
+  const onCloseRef = useRef(onClose);
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  });
+
+  // Foco inicial y restauración: solo depende de `open` para no soltar el foco a mitad del uso.
   useEffect(() => {
     if (!open) return;
     const panel = panelRef.current;
@@ -31,9 +37,20 @@ export function Modal({ open, onClose, title, description, className, children }
     const initial = panel.querySelector('[data-autofocus]') ?? getFocusableElements(panel)[0];
     if (initial && !panel.contains(document.activeElement)) initial.focus();
 
+    return () => {
+      if (previousFocus instanceof HTMLElement) previousFocus.focus();
+    };
+  }, [open]);
+
+  // Escape, trampa de Tab y bloqueo de scroll: estables ante cambios de handlers.
+  useEffect(() => {
+    if (!open) return;
+    const panel = panelRef.current;
+    if (!panel) return;
+
     function handleKeyDown(event) {
       if (event.key === 'Escape') {
-        onClose();
+        onCloseRef.current();
         return;
       }
       // Atrapa el Tab dentro del diálogo para no recorrer el fondo.
@@ -60,9 +77,8 @@ export function Modal({ open, onClose, title, description, className, children }
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
       document.body.style.overflow = previousOverflow;
-      if (previousFocus instanceof HTMLElement) previousFocus.focus();
     };
-  }, [open, onClose]);
+  }, [open]);
 
   if (!open) return null;
 
@@ -71,7 +87,11 @@ export function Modal({ open, onClose, title, description, className, children }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div aria-hidden className="absolute inset-0 bg-text-primary/50" onClick={onClose} />
+      <div
+        aria-hidden
+        className="absolute inset-0 bg-text-primary/50"
+        onClick={() => onCloseRef.current()}
+      />
       <div
         ref={panelRef}
         role="dialog"
@@ -94,7 +114,12 @@ export function Modal({ open, onClose, title, description, className, children }
               </p>
             )}
           </div>
-          <Button variant="ghost" size="icon" onClick={onClose} aria-label="Cerrar diálogo">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => onCloseRef.current()}
+            aria-label="Cerrar diálogo"
+          >
             <X aria-hidden className="h-5 w-5" />
           </Button>
         </div>

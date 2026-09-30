@@ -10,8 +10,10 @@ import { TextField } from '@/components/ui/text-field.jsx';
 import { useAuthStore } from '@/stores/auth.store.js';
 import { notify } from '@/services/toast.js';
 import { loginSchema } from '@/features/auth/schemas/login.schema.js';
+import { useDocumentTitle } from '@/hooks/use-document-title.js';
 
 export function LoginPage() {
+  useDocumentTitle('Iniciar sesión');
   const navigate = useNavigate();
   const location = useLocation();
   const login = useAuthStore((state) => state.login);
@@ -92,6 +94,12 @@ export function LoginPage() {
             {isSubmitting ? 'Ingresando…' : 'Ingresar'}
           </Button>
         </form>
+
+        {/* Ayuda de acceso para el entorno demo */}
+        <p className="mt-4 rounded-md bg-surface-muted px-3 py-2 text-center text-xs text-text-secondary">
+          Acceso demo - usuario <strong className="font-semibold">devcassa</strong> · contraseña{' '}
+          <strong className="font-semibold">cassa123</strong>
+        </p>
       </Card>
     </div>
   );

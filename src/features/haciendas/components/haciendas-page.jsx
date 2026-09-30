@@ -10,6 +10,7 @@ import { HaciendaTable } from '@/features/haciendas/components/hacienda-table.js
 import { HaciendasEmpty } from '@/features/haciendas/components/haciendas-empty.jsx';
 import { HaciendasPagination } from '@/features/haciendas/components/haciendas-pagination.jsx';
 import { useHaciendas } from '@/features/haciendas/hooks/use-haciendas.js';
+import { useDocumentTitle } from '@/hooks/use-document-title.js';
 import { cn } from '@/lib/cn.js';
 
 // Filtros del segmentado.
@@ -20,6 +21,7 @@ const FILTERS = [
 ];
 
 export function HaciendasPage() {
+  useDocumentTitle('Haciendas');
   const { items, pagination, status, error, estatusFilter, setEstatusFilter, setPage, refresh } =
     useHaciendas();
 

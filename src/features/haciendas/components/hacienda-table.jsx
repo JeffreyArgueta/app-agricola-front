@@ -1,4 +1,5 @@
 // Tabla de haciendas con acciones por fila.
+// En móvil la primera columna (Nombre) queda fija y el resto se desplaza.
 // Desactivar solo aplica a filas activas.
 import { Pencil, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button.jsx';
@@ -11,7 +12,10 @@ export function HaciendaTable({ items, onEdit, onDelete }) {
         <caption className="sr-only">Listado de haciendas con estatus y acciones</caption>
         <thead>
           <tr className="border-b border-border text-xs uppercase tracking-wide text-text-secondary">
-            <th scope="col" className="px-4 py-3 font-medium">
+            <th
+              scope="col"
+              className="px-4 py-3 font-medium max-md:sticky max-md:left-0 max-md:z-10 max-md:bg-surface max-md:shadow-[2px_0_4px_-2px_rgba(26,46,31,0.2)]"
+            >
               Nombre
             </th>
             <th scope="col" className="px-4 py-3 font-medium">
@@ -33,7 +37,12 @@ export function HaciendaTable({ items, onEdit, onDelete }) {
                 key={hacienda.idHacienda}
                 className="border-b border-border last:border-0 hover:bg-surface-muted/60"
               >
-                <td className="px-4 py-3 font-medium text-text-primary">{hacienda.nombre}</td>
+                <td
+                  scope="row"
+                  className="px-4 py-3 font-medium text-text-primary max-md:sticky max-md:left-0 max-md:z-10 max-md:bg-surface max-md:shadow-[2px_0_4px_-2px_rgba(26,46,31,0.2)]"
+                >
+                  {hacienda.nombre}
+                </td>
                 <td className="px-4 py-3 text-text-secondary">{hacienda.ubicacion}</td>
                 <td className="px-4 py-3">
                   <EstatusBadge value={hacienda.estatus} />

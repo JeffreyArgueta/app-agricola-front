@@ -12,6 +12,11 @@ export function HaciendaDeleteDialog({ hacienda, open, onClose, onDeleted }) {
   const [error, setError] = useState(null);
   const removeHacienda = useHaciendaStore((state) => state.removeHacienda);
 
+  // Evita cerrar a mitad del borrado (Escape, velo o botones).
+  function handleClose() {
+    if (!isDeleting) onClose();
+  }
+
   // Confirma la baja: desactiva, avisa y cierra. El store ya refresca la lista.
   async function handleConfirm() {
     setIsDeleting(true);
@@ -31,7 +36,7 @@ export function HaciendaDeleteDialog({ hacienda, open, onClose, onDeleted }) {
   return (
     <Modal
       open={open}
-      onClose={isDeleting ? () => {} : onClose}
+      onClose={handleClose}
       title="Desactivar hacienda"
       description={`Esta acción marcará "${hacienda.nombre}" como Inactiva.`}
     >
@@ -53,7 +58,7 @@ export function HaciendaDeleteDialog({ hacienda, open, onClose, onDeleted }) {
       )}
 
       <div className="mt-4 flex justify-end gap-2">
-        <Button variant="outline" onClick={onClose} disabled={isDeleting} data-autofocus>
+        <Button variant="outline" onClick={handleClose} disabled={isDeleting} data-autofocus>
           Cancelar
         </Button>
         <Button variant="danger" onClick={handleConfirm} loading={isDeleting}>

@@ -1,7 +1,9 @@
 import { CountCard } from '@/features/dashboard/components/count-card.jsx';
 import { useHaciendasCount } from '@/features/dashboard/hooks/use-haciendas-count.js';
+import { useDocumentTitle } from '@/hooks/use-document-title.js';
 
 export function DashboardPage() {
+  useDocumentTitle('Dashboard');
   const { total, status, error, refresh } = useHaciendasCount();
 
   return (
