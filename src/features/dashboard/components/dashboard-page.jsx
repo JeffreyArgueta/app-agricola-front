@@ -1,13 +1,25 @@
-// Vista temporal del dashboard.
-import { Card } from '@/components/ui/card.jsx';
+import { CountCard } from '@/features/dashboard/components/count-card.jsx';
+import { useHaciendasCount } from '@/features/dashboard/hooks/use-haciendas-count.js';
 
 export function DashboardPage() {
+  const { total, status, error, refresh } = useHaciendasCount();
+
   return (
-    <div className="flex flex-col gap-4">
-      <h1 className="text-xl font-semibold text-text-primary">Dashboard</h1>
-      <Card className="p-6">
-        <p className="text-sm text-text-secondary">Próximamente: total de haciendas.</p>
-      </Card>
+    <div className="flex flex-col gap-5">
+      <div>
+        <h1 className="text-xl font-semibold text-text-primary">Dashboard</h1>
+        <p className="mt-1 text-sm text-text-secondary">Resumen general de tus haciendas</p>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <CountCard
+          total={total}
+          status={status}
+          error={error}
+          onRefresh={refresh}
+          onRetry={refresh}
+        />
+      </div>
     </div>
   );
 }
