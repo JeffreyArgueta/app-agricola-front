@@ -41,7 +41,7 @@ function toHttpError(payload, status) {
   });
 }
 
-export async function http(path, { method = 'GET', body, headers, signal } = {}) {
+export async function http(path, { method = 'GET', body, headers, signal, unwrap = true } = {}) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
 
@@ -71,7 +71,8 @@ export async function http(path, { method = 'GET', body, headers, signal } = {})
   }
 
   // Desenvuelve el backend: { status, message, data } -> data. Devuelve el payload tal cual.
-  if (payload && typeof payload === 'object' && 'data' in payload) {
+  // Con unwrap: false devuelve el payload completo (p. ej. listas con { data, pagination }).
+  if (unwrap && payload && typeof payload === 'object' && 'data' in payload) {
     return payload.data;
   }
   return payload;
